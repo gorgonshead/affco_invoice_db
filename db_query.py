@@ -1,14 +1,15 @@
 import sqlite3
 import pandas as pd
 
-def db_query_date(item, sell_by):
+# Queries the database for an item between a date range
+def db_query_date(item, min_date, max_date):
     # Connect to SQLite database
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
 
     # Query data into a pandas DataFrame, convert datatype and limit data
     df = pd.read_sql_query("SELECT * FROM invoices", conn)
     df['SELL BY'] = pd.to_datetime(df['SELL BY'])
-    df = df[(df['ITEM'] == item) & (df['SELL BY'] > sell_by)]
+    df = df[(df['ITEM'] == item) & (df['SELL BY'] >= min_date) & (df['SELL BY'] <= max_date)]
     df = df.sort_values(by=['SELL BY'])
 
     # Show the DataFrame & export
@@ -18,6 +19,7 @@ def db_query_date(item, sell_by):
     # Don't forget to close the connection
     conn.close()
 
+# Sums total net weight for each delivery
 def db_query_invoices():
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
     
@@ -35,6 +37,7 @@ def db_query_invoices():
 
     conn.close()
 
+# exports list of negative dollar amount invoices
 def db_query_credits():
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
 
