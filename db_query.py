@@ -1,8 +1,14 @@
 import sqlite3
 import pandas as pd
 
-# Queries the database for an item between a date range
 def db_query_date(item, min_date, max_date):
+    """Queries the database for an item between a date range
+    
+    Keyword arguments:
+    item = item number to be queried
+    min_date = lower bound for date range
+    max_date = upper bound for date range"""
+    
     # Connect to SQLite database
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
 
@@ -19,8 +25,10 @@ def db_query_date(item, min_date, max_date):
     # Don't forget to close the connection
     conn.close()
 
-# Sums total net weight for each delivery
+
 def db_query_invoices():
+    """Sums total net weight for each delivery"""
+
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
     
     query = '''
@@ -37,8 +45,9 @@ def db_query_invoices():
 
     conn.close()
 
-# exports list of negative dollar amount invoices
 def db_query_credits():
+    """exports list of negative dollar amount invoices"""
+
     conn = sqlite3.connect(r'C:\Users\Affco\SQLite\sqlite-tools-win32-x86-3420000\invoice_db.db')
 
     query = '''SELECT * FROM invoices WHERE PRICE < 0'''
