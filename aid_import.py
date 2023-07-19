@@ -20,6 +20,9 @@ for path in paths:
     # Check if the file is a CSV
     if path.endswith('.csv'):
 
+        cnt = 0
+        cnt += 1
+
         # Load the CSV file into a pandas DataFrame
         df = pd.read_csv(path, encoding='ISO-8859-1', parse_dates=['SELL BY'])
 
@@ -27,7 +30,7 @@ for path in paths:
         header_check(conn, path)
 
         #check for bad sell bys
-        bad_sh_date_chk(conn, last_sellbys, desktop_path, df)
+        bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt)
 
         # Run check if invoice numbers are already in db
         df = dup_inv(conn, df)

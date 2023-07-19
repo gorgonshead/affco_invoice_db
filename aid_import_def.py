@@ -4,7 +4,7 @@ import pandas as pd
 import csv
 import sys
 
-def bad_sh_date_chk(conn, last_sellbys, desktop_path, df):
+def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
     """Export sell by dates older than the best dates for that item.
     
     Keyword arguments:
@@ -21,7 +21,7 @@ def bad_sh_date_chk(conn, last_sellbys, desktop_path, df):
     if not earlier_dates.empty:
         print('Incoming dates earlier than those in the database:')
         print(earlier_dates[['ITEM', 'SELL BY', 'QUANTITY', 'SELL BY_in_db']])
-        earlier_dates.to_csv(os.path.join(desktop_path, 'sell_bys.csv'))
+        earlier_dates.to_csv(os.path.join(desktop_path, f'sell_bys{cnt}.csv'))
     else:
         print('All dates better than previous invoices.')
 
