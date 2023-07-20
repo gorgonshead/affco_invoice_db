@@ -1,13 +1,13 @@
 import os
 import sqlite3
 import pandas as pd
-from tkinter.filedialog import askopenfilenames
-from aid_import_def import bad_sh_date_chk, dup_inv, header_check, deliv_date
+from tkinter import *
+from aid_import_def import *
 
 # Initialize variables for con, import files, & desktop path 
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'invoice_db.db')
 conn = sqlite3.connect(db_path)
-paths = askopenfilenames()
+paths = select_files()
 desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
 # Initialize most recent sell bys

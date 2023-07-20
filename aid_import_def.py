@@ -3,7 +3,11 @@ import sqlite3
 import pandas as pd
 import csv
 import sys
-from tkinter import simpledialog
+import tkinter as tk
+from tkinter import *
+from tkcalendar import *
+from datetime import datetime
+from tkinter.filedialog import askopenfilenames
 
 def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
     """Export sell by dates older than the best dates for that item.
@@ -55,7 +59,7 @@ def header_check(conn, path):
     
     # Compare headers, then if don't match stop program
     if set(csv_headers) == set(column_names):
-        print('.csv headers match')
+        print('File headers match.')
     else:
         raise Exception('File headers do not match.')
     
@@ -70,19 +74,57 @@ def deliv_date(conn, df):
         print("No data to process.")
         return
     
-    # Prompt user for the delivery date, transform to datetime
-    new_date = simpledialog.askstring("Please type the delivery date of the invoice.", "Please type the delivery date of the invoice.")
-    new_date = pd.to_datetime(new_date)
-
     # Take delivery number from df
     new_invoice = df['DELIVERY'].max()
+
+    # Prompt user for the delivery date, transform to datetime
+    new_date = deldate_cal_win()
+    new_date = pd.to_datetime(new_date)
     
     # Get a list of all delivery numbers from the database
-    existing_del_num = pd.read_sql_query('SELECT delivery_number FROM delivery_date', conn)['delivery_number'].values
+    existing_del_num = pd.read_sql_query('SELECT delivery_number FROM delivery_date', conn)['Delivery_Number'].values
     
     # If new_invoice doesn't exist in existing_del_num 
     if new_invoice not in existing_del_num:
         # Create new df and append to the database
-        new_df = pd.DataFrame({'delivery_date' : [new_date],'delivery_number' : [new_invoice]})
+        new_df = pd.DataFrame({'Delivery_Date' : [new_date],'Delivery_Number' : [new_invoice]})
         new_df.to_sql(name='delivery_date', con=conn, if_exists='append', index=False)
     else: print(f"The delivery number {new_invoice} already exists in the database.")
+
+def deldate_cal_win():
+    """Create a calendar window to input the delivery date, then return the date selected"""
+
+    def return_date():
+        chosen_date.set(new_date_cal.get_date())
+        root.destroy()
+    
+    root = Tk()
+    root.title("Please enter the invoice delivery date.")
+
+    mainframe = Frame(root)
+    mainframe.pack()
+
+    chosen_date = StringVar()
+    choose_date = StringVar(value=datetime.now().strftime('%d/%m/%Y'))
+    new_date_cal = Calendar(mainframe, date_pattern='y/mm/dd', textvariable=choose_date)
+    new_date_cal.pack()
+
+    button = Button(mainframe, text="OK", command=return_date)
+    button.pack(fill=BOTH)
+
+    mainframe.focus_force()
+
+    root.mainloop()
+
+    return chosen_date.get()
+
+def select_files():
+    """Opens a window to select one or more files to manipulate."""
+
+    root = Tk()
+    root.withdraw()
+
+    paths = askopenfilenames()
+
+    root.destroy()
+    return paths
