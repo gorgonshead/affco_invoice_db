@@ -1,8 +1,6 @@
 import os
-import sqlite3
 import pandas as pd
 import csv
-import sys
 import tkinter as tk
 from tkinter import *
 from tkcalendar import *
@@ -79,7 +77,7 @@ def deliv_date(conn, df):
 
     # Prompt user for the delivery date, transform to datetime
     new_date = deldate_cal_win()
-    new_date = pd.to_datetime(new_date)
+    new_date = pd.to_datetime(new_date).date
     
     # Get a list of all delivery numbers from the database
     existing_del_num = pd.read_sql_query('SELECT delivery_number FROM delivery_date', conn)['Delivery_Number'].values
