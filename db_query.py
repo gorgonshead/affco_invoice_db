@@ -5,6 +5,7 @@ from datetime import datetime
 
 def connection():
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'invoice_db.db')
+    print(db_path)
     return sqlite3.connect(db_path)
 
 def desktop_path():
@@ -22,14 +23,16 @@ def db_query_date(item, min_date, max_date):
     # Connect to SQLite database
     conn = connection()
 
-
     min_date = pd.to_datetime(min_date, format="%m/%d/%y")
     max_date = pd.to_datetime(max_date, format="%m/%d/%y")
+    print(min_date)
+    print(max_date)
 
     print(type(item))
 
     # Query data into a pandas DataFrame, convert datatype and limit data
     df = pd.read_sql_query("SELECT * FROM invoices", conn)
+    print(df)
     df['SELL BY'] = pd.to_datetime(df['SELL BY'])
     df['ITEM'] = df['ITEM'].astype(str)
     df = df[(df['ITEM'] == item) & df['SELL BY'].between(min_date, max_date)]

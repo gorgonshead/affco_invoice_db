@@ -17,12 +17,14 @@ class tk_init:
 def inv_date_win():
 
     # Set up main window
-    main_root = tk.Tk()
-    main_root_title = "AID - AFFCO Invoice Database"
-    main = tk_init(main_root, main_root_title)
+    query_root = tk.Toplevel()
+    query_root.title("AID - AFFCO Invoice Database")
+
+    mainframe = Frame(query_root)
+    mainframe.pack(fill=BOTH, expand=TRUE)
 
     # Create input fields & labels in mainframe
-    input_frame = ttk.Frame(main.mainframe)
+    input_frame = ttk.Frame(mainframe)
     input_frame.pack(side=TOP, fill=BOTH, expand=FALSE)
     
     item_label = Label(input_frame, text="Item")
@@ -47,7 +49,7 @@ def inv_date_win():
     before_date_ent.grid(column=1, row=2, sticky="W")
 
     # Create display for results of the query in mainframe
-    display_frame = ttk.Frame(main.mainframe, height=250, padding= 10, width=500)
+    display_frame = ttk.Frame(mainframe, height=250, padding= 10, width=500)
     display_frame.pack(side=BOTTOM, fill=BOTH, expand=TRUE)
 
     treeview = ttk.Treeview(display_frame)
@@ -57,14 +59,13 @@ def inv_date_win():
                        lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview))
     ok_button.pack(side=LEFT, fill=X, expand=TRUE)
 
-    cancel_button = Button(display_frame, text="Cancel", command= main.root.destroy)
+    cancel_button = Button(display_frame, text="Cancel", command= query_root.destroy)
     cancel_button.pack(side=RIGHT, fill=X, expand=TRUE)
 
     # Add padding around all elements
     for child in input_frame.winfo_children(): 
         child.grid_configure(padx=5, pady=5)
 
-    main_root.mainloop()
 
 def add_df_to_treeview(df, treeview):
     # clear previous contents

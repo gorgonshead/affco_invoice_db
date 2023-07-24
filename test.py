@@ -1,3 +1,4 @@
 import db_query
-
-db_query.db_query_invoices()
+import query_gui
+import main_gui
+main_gui.main_gui()

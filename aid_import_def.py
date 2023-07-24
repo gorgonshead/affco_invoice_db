@@ -11,10 +11,10 @@ def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
     """Export sell by dates older than the best dates for that item.
     
     Keyword arguments:
-    conn = database connection object
-    last_sellbys = pandas dataframe that contains a list of dates
-    desktop_path = path to the current user's desktop
-    df = pandas dataframe to check last_sellbys against"""
+    conn = database connection object.
+    last_sellbys = pandas dataframe that contains a list of dates.
+    desktop_path = path to the current user's desktop.
+    df = pandas dataframe to check last_sellbys against."""
 
     # Merge the last_sellbys on the db df
     # If the best sellbys in db are greater than incoming, print &
@@ -65,7 +65,7 @@ def deliv_date(conn, df):
     """Query user for the date of delivery, then append date & delivery number to delivery_date table
     
     Keyword arguments:
-    conn = connection to database
+    conn = connection to database.
     df = dataframe of incoming invoice"""
 
     if df.empty:
@@ -77,7 +77,7 @@ def deliv_date(conn, df):
 
     # Prompt user for the delivery date, transform to datetime
     new_date = deldate_cal_win()
-    new_date = pd.to_datetime(new_date).date
+    new_date = pd.to_datetime(new_date)
     
     # Get a list of all delivery numbers from the database
     existing_del_num = pd.read_sql_query('SELECT delivery_number FROM delivery_date', conn)['Delivery_Number'].values
@@ -117,7 +117,7 @@ def deldate_cal_win():
     return chosen_date.get()
 
 def select_files():
-    """Opens a window to select one or more files to manipulate."""
+    """Opens a window to select one or more files to import."""
 
     root = Tk()
     root.withdraw()
