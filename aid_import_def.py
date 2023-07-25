@@ -7,6 +7,7 @@ from tkcalendar import *
 from datetime import datetime
 from tkinter.filedialog import askopenfilenames
 
+
 def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
     """Export sell by dates older than the best dates for that item.
     
@@ -39,7 +40,6 @@ def dup_inv(conn, df):
     df['flag'] = df['DELIVERY'].isin(existing_delivery)
     df = df[~df['flag']]
     df = df.drop(columns=['flag'])
-    print(df)
     return df
 
 def header_check(conn, path):
@@ -76,7 +76,7 @@ def deliv_date(conn, df):
     new_invoice = df['DELIVERY'].max()
 
     # Prompt user for the delivery date, transform to datetime
-    new_date = deldate_cal_win()
+    new_date = deldate_cal_win(df)
     new_date = pd.to_datetime(new_date)
     
     # Get a list of all delivery numbers from the database
@@ -89,15 +89,19 @@ def deliv_date(conn, df):
         new_df.to_sql(name='delivery_date', con=conn, if_exists='append', index=False)
     else: print(f"The delivery number {new_invoice} already exists in the database.")
 
-def deldate_cal_win():
+def deldate_cal_win(df):
     """Create a calendar window to input the delivery date, then return the date selected"""
 
     def return_date():
         chosen_date.set(new_date_cal.get_date())
         root.destroy()
     
+    def invoice_num(df):
+        num = df['DELIVERY'].unique()
+        return num
+
     root = Tk()
-    root.title("Please enter the invoice delivery date.")
+    root.title(f"Delivery date from invoice {invoice_num()}")
 
     mainframe = Frame(root)
     mainframe.pack()
@@ -126,3 +130,23 @@ def select_files():
 
     root.destroy()
     return paths
+
+def add_treeview(df, treeview):
+    """Adds imported items to main_gui treeview"""
+
+ # clear previous contents
+    for i in treeview.get_children():
+        treeview.delete(i)
+
+    # add column names
+    columns = ["DELIVERY", "ITEM", "DESCRIPTION", "SELL BY", "QUANTITY"]
+    treeview["columns"] = columns
+
+    for i in columns:
+        treeview.column(i, anchor="w")
+        treeview.heading(i, text=i, anchor='w')
+
+    # add data
+    for index, row in df.iterrows():
+        values = [row[col] for col in columns]
+        treeview.insert("", "end", values=values)

@@ -3,22 +3,12 @@ from tkinter import *
 from tkinter import ttk
 from tkcalendar import *
 from db_query import *
-import tkinter.ttk as ttk
 from datetime import datetime
-
-#initialize tk frames
-class tk_init:
-    def __init__(self, root, title):
-        self.root = root
-        self.root.title(title)
-        self.mainframe = ttk.Frame(self.root)
-        self.mainframe.pack(fill=BOTH, expand=TRUE)
 
 def inv_date_win():
 
     # Set up main window
     query_root = tk.Toplevel()
-    query_root.title("AID - AFFCO Invoice Database")
 
     mainframe = Frame(query_root)
     mainframe.pack(fill=BOTH, expand=TRUE)
@@ -68,6 +58,8 @@ def inv_date_win():
 
 
 def add_df_to_treeview(df, treeview):
+    """Adds query to treeview"""
+    
     # clear previous contents
     for i in treeview.get_children():
         treeview.delete(i)
