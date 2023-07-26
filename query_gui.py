@@ -9,7 +9,7 @@ def inv_date_win(conn):
 
     # Set up main window
     query_root = tk.Toplevel()
-    query_root.geometry("1500x700")
+    query_root.geometry()
 
     mainframe = Frame(query_root)
     mainframe.pack(fill=BOTH, expand=TRUE)
