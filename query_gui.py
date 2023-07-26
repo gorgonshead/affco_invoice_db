@@ -5,10 +5,11 @@ from tkcalendar import *
 from db_query import *
 from datetime import datetime
 
-def inv_date_win():
+def inv_date_win(conn):
 
     # Set up main window
     query_root = tk.Toplevel()
+    query_root.geometry("1500x700")
 
     mainframe = Frame(query_root)
     mainframe.pack(fill=BOTH, expand=TRUE)
@@ -46,7 +47,7 @@ def inv_date_win():
     treeview.pack(fill=BOTH, expand=TRUE)
 
     ok_button = Button(display_frame, text="OK", command=
-                       lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview))
+                       lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview, conn))
     ok_button.pack(side=LEFT, fill=X, expand=TRUE)
 
     cancel_button = Button(display_frame, text="Cancel", command= query_root.destroy)
@@ -77,9 +78,9 @@ def add_df_to_treeview(df, treeview):
         values = [row[col] for col in columns]
         treeview.insert("", "end", values=values)
 
-def get_df(item, after_date, before_date, treeview):
+def get_df(item, after_date, before_date, treeview, conn):
 
-    df = db_query_date(item, after_date, before_date)
+    df = db_query_date(item, after_date, before_date, conn)
 
     print(df)
 

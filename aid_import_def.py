@@ -3,6 +3,7 @@ import pandas as pd
 import csv
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from tkcalendar import *
 from datetime import datetime
 from tkinter.filedialog import askopenfilenames
@@ -61,7 +62,7 @@ def header_check(conn, path):
     else:
         raise Exception('File headers do not match.')
     
-def deliv_date(conn, df):
+def deliv_date(conn, df, root):
     """Query user for the date of delivery, then append date & delivery number to delivery_date table
     
     Keyword arguments:
@@ -76,7 +77,7 @@ def deliv_date(conn, df):
     new_invoice = df['DELIVERY'].max()
 
     # Prompt user for the delivery date, transform to datetime
-    new_date = deldate_cal_win(df)
+    new_date = deldate_cal_win(df, root)
     new_date = pd.to_datetime(new_date)
     
     # Get a list of all delivery numbers from the database
@@ -89,7 +90,7 @@ def deliv_date(conn, df):
         new_df.to_sql(name='delivery_date', con=conn, if_exists='append', index=False)
     else: print(f"The delivery number {new_invoice} already exists in the database.")
 
-def deldate_cal_win(df):
+def deldate_cal_win(df, root):
     """Create a calendar window to input the delivery date, then return the date selected"""
 
     def return_date():
@@ -100,8 +101,8 @@ def deldate_cal_win(df):
         num = df['DELIVERY'].unique()
         return num
 
-    root = Tk()
-    root.title(f"Delivery date from invoice {invoice_num()}")
+    root = tk.Toplevel()
+    root.title(f"Delivery date from invoice {invoice_num(df)}")
 
     mainframe = Frame(root)
     mainframe.pack()
@@ -115,8 +116,6 @@ def deldate_cal_win(df):
     button.pack(fill=BOTH)
 
     mainframe.focus_force()
-
-    root.mainloop()
 
     return chosen_date.get()
 
@@ -134,6 +133,8 @@ def select_files():
 def add_treeview(df, treeview):
     """Adds imported items to main_gui treeview"""
 
+    df['SELL BY'] = df['SELL BY'].dt.date
+
  # clear previous contents
     for i in treeview.get_children():
         treeview.delete(i)
@@ -149,4 +150,5 @@ def add_treeview(df, treeview):
     # add data
     for index, row in df.iterrows():
         values = [row[col] for col in columns]
+        print(values)
         treeview.insert("", "end", values=values)

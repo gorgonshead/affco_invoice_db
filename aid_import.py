@@ -4,14 +4,13 @@ import pandas as pd
 from tkinter import *
 from aid_import_def import *
 
-def create_table_invoices(conn):
+def create_table(conn):
     cursor = conn.cursor()
 
     create_table_invoices_sql = """
-    CREATE TABLE IF NONE EXISTS invoices (
-    id INTEGER PRIMARY KEY
+    CREATE TABLE IF NOT EXISTS invoices (
     CUSTOMER INTEGER,
-    ORDER INTEGER,
+    'ORDER' INTEGER,
     DELIVERY INTEGER,
     PALLET TEXT,
     ITEM INTEGER,
@@ -23,20 +22,27 @@ def create_table_invoices(conn):
     `GW LINE ITEM` REAL,
     `BOX TARE` REAL,
     `GW PRODUCT` REAL,
-    `PACKAGE TARE` REAL
-    `NW PRODUCT` REAL
-    PRICE REAL
-    CWF TEXT
+    `PACKAGE TARE` REAL,
+    `NW PRODUCT` REAL,
+    PRICE REAL,
+    CWF TEXT,
     PUOM TEXT
     );
     """
-    cursor.excecute(create_table_invoices_sql)
 
+    create_table_delivery_date_sql = """
+    CREATE TABLE IF NOT EXISTS delivery_date (
+    Delivery_Date TEXT,
+    Delivery_Number REAL
+    );
+    """
 
-def aid_import(treeview, root):
+    cursor.execute(create_table_invoices_sql)
+    cursor.execute(create_table_delivery_date_sql)
+
+def aid_import(treeview, root, conn):
     # Initialize variables for con, import files, & desktop path 
-    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'invoice_db.db')
-    conn = sqlite3.connect(db_path)
+    create_table(conn)
     paths = select_files()
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
@@ -66,7 +72,7 @@ def aid_import(treeview, root):
             df = dup_inv(conn, df)
 
             # Prompt for delivery date, then add date/invoice number to correct table
-            deliv_date(conn, df)
+            deliv_date(conn, df, root)
 
             if df.empty:
 
@@ -75,19 +81,15 @@ def aid_import(treeview, root):
                 label.pack(padx=10, pady=10)
                 button = Button(duplicate_er, text="OK", command=duplicate_er.destroy)
                 button.pack(padx=10, pady=10, side=BOTTOM)
-
-                duplicate_er.mainloop()
                 
                 return
+            else:
  
-            # Add df to the treeview widget
-            add_treeview(df, treeview)                
+                # Add df to the treeview widget
+                add_treeview(df, treeview)             
 
-            # Convert the DataFrame into a SQLite table
-            df.to_sql(name='invoices', con=conn, if_exists='append', index=False)
+                # Convert the DataFrame into a SQLite table
+                df.to_sql(name='invoices', con=conn, if_exists='append', index=False)
 
         else:
             print('Please upload a .csv file')
-
-    # Close the connection to the SQLite database
-    conn.close()

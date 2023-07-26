@@ -12,7 +12,7 @@ def desktop_path():
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
     return desktop_path
 
-def db_query_date(item, min_date, max_date):
+def db_query_date(item, min_date, max_date, conn):
     """Queries the database for an item between a date range
     
     Keyword arguments:
@@ -20,9 +20,6 @@ def db_query_date(item, min_date, max_date):
     min_date = lower bound for date range
     max_date = upper bound for date range"""
     
-    # Connect to SQLite database
-    conn = connection()
-
     min_date = pd.to_datetime(min_date, format="%m/%d/%y")
     max_date = pd.to_datetime(max_date, format="%m/%d/%y")
     print(min_date)
@@ -42,9 +39,6 @@ def db_query_date(item, min_date, max_date):
     # Export dataframe
     dkp = desktop_path()
     df.to_csv(os.path.join(dkp, "inv_sell_by.csv"))
-
-    # Don't forget to close the connection
-    conn.close()
 
     return df
 
@@ -68,8 +62,6 @@ def db_query_invoices():
     dkp = desktop_path()
     df.to_csv(os.path.join(dkp, "total_invoices.csv"))
 
-    conn.close()
-
 def db_query_credits():
     """exports list of negative dollar amount invoices"""
 
@@ -79,5 +71,3 @@ def db_query_credits():
     df = pd.read_sql_query(query, conn)
     print(df)
     df.to_csv('C:/Users/Affco/Desktop/credits.csv')
-
-    conn.close()
