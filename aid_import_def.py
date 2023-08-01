@@ -9,7 +9,7 @@ from datetime import datetime
 from tkinter.filedialog import askopenfilenames
 
 
-def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
+def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, root):
     """Export sell by dates older than the best dates for that item.
     
     Keyword arguments:
@@ -24,9 +24,27 @@ def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt):
     merged_df = pd.merge(df, last_sellbys, on='ITEM', how='inner', suffixes=('', '_in_db'))
     earlier_dates = merged_df[merged_df['SELL BY'] < merged_df['SELL BY_in_db']]
     if not earlier_dates.empty:
-        print('Incoming dates earlier than those in the database:')
-        print(earlier_dates[['ITEM', 'SELL BY', 'QUANTITY', 'SELL BY_in_db']])
-        earlier_dates.to_csv(os.path.join(desktop_path, f'sell_bys{cnt}.csv'))
+
+        def early_dates_export(earlier_dates, root):   
+            print('Incoming dates earlier than those in the database:')
+            print(earlier_dates[['ITEM', 'SELL BY', 'QUANTITY', 'SELL BY_in_db']])
+            invoice_num = pd.unique(earlier_dates['DELIVERY'])
+            invoice_num = invoice_num[0]
+            earlier_dates.to_csv(os.path.join(desktop_path, f'{invoice_num}_sell_by.csv'))
+            root.destroy()
+
+        yes_no_root  = Toplevel(root)
+        yes_label = Label(yes_no_root, text="Would you like to export the mixed up dates?")
+        yes_label.pack(side=TOP, padx=5, pady=5)
+        yes_but = Button(yes_no_root, text="yes", command=lambda: early_dates_export(earlier_dates, yes_no_root))
+        yes_but.pack(side=LEFT, padx=5, pady=5)
+        no_but = Button(yes_no_root, text="No", command=yes_no_root.destroy)
+        no_but.pack(side=RIGHT, padx=5, pady=5)
+
+        yes_no_root.grab_set()
+
+        root.wait_window(yes_no_root)
+
     else:
         print('All dates better than previous invoices.')
 
@@ -138,6 +156,8 @@ def add_treeview(df, treeview):
  # clear previous contents
     for i in treeview.get_children():
         treeview.delete(i)
+
+    treeview.column("#0", width=0, stretch=False)
 
     # add column names
     columns = ["DELIVERY", "ITEM", "DESCRIPTION", "SELL BY", "QUANTITY"]

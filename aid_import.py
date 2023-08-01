@@ -48,7 +48,7 @@ def aid_import(treeview, root, conn):
 
     # Initialize most recent sell bys
     last_sellbys = pd.read_sql_query('SELECT ITEM, MAX("SELL BY") as "SELL BY" FROM invoices GROUP BY ITEM', conn)
-    last_sellbys['SELL BY'] = pd.to_datetime(last_sellbys['SELL BY'])
+    last_sellbys['SELL BY'] = pd.to_datetime(last_sellbys['SELL BY'], errors='coerce')
 
     # Loop through every chosen file
     for path in paths:
@@ -56,14 +56,11 @@ def aid_import(treeview, root, conn):
         # Check if the file is a CSV
         if path.endswith('.csv'):
 
-            cnt = 0
-            cnt += 1
-
             # Load the CSV file into a pandas DataFrame
             df = pd.read_csv(path, encoding='ISO-8859-1', parse_dates=['SELL BY'])
 
             #check for bad sell bys
-            bad_sh_date_chk(conn, last_sellbys, desktop_path, df, cnt)
+            bad_sh_date_chk(conn, last_sellbys, desktop_path, df, root)
 
             #check for matching headers
             header_check(conn, path)

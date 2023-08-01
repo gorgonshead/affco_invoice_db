@@ -36,12 +36,7 @@ def db_query_date(item, min_date, max_date, conn):
     df = df.sort_values(by=['SELL BY'])
     df['SELL BY'] = df['SELL BY'].dt.date
 
-    # Export dataframe
-    dkp = desktop_path()
-    df.to_csv(os.path.join(dkp, "inv_sell_by.csv"))
-
     return df
-
 
 def db_query_invoices():
     """Sums total net weight for each delivery"""
@@ -58,9 +53,6 @@ def db_query_invoices():
 
     df = pd.read_sql_query(query, conn)
     print(df)
-    
-    dkp = desktop_path()
-    df.to_csv(os.path.join(dkp, "total_invoices.csv"))
 
 def db_query_credits():
     """exports list of negative dollar amount invoices"""

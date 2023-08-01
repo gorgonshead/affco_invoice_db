@@ -78,6 +78,10 @@ def add_df_to_treeview(df, treeview):
         values = [row[col] for col in columns]
         treeview.insert("", "end", values=values)
 
+    # Depricated till I can get it to play nice with the uninstaller
+    #dkp = desktop_path()
+    #df.to_csv(os.path.join(dkp, "total_invoices.csv"))
+
 def get_df(item, after_date, before_date, treeview, conn):
 
     df = db_query_date(item, after_date, before_date, conn)
