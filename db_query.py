@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import os
 from datetime import datetime
+import babel.numbers
 
 def connection():
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'invoice_db.db')
@@ -20,8 +21,8 @@ def db_query_date(item, min_date, max_date, conn):
     min_date = lower bound for date range
     max_date = upper bound for date range"""
     
-    min_date = pd.to_datetime(min_date, format="%m/%d/%y")
-    max_date = pd.to_datetime(max_date, format="%m/%d/%y")
+    min_date = pd.to_datetime(min_date, format="%m/%d/%y").date()
+    max_date = pd.to_datetime(max_date, format="%m/%d/%y").date()
     print(min_date)
     print(max_date)
 
@@ -30,11 +31,11 @@ def db_query_date(item, min_date, max_date, conn):
     # Query data into a pandas DataFrame, convert datatype and limit data
     df = pd.read_sql_query("SELECT * FROM invoices", conn)
     print(df)
-    df['SELL BY'] = pd.to_datetime(df['SELL BY'])
+    print(df['SELL BY'])
+    df['SELL BY'] = pd.to_datetime(df['SELL BY'], errors='coerce').dt.date
     df['ITEM'] = df['ITEM'].astype(str)
     df = df[(df['ITEM'] == item) & df['SELL BY'].between(min_date, max_date)]
     df = df.sort_values(by=['SELL BY'])
-    df['SELL BY'] = df['SELL BY'].dt.date
 
     return df
 
