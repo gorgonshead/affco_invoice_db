@@ -73,14 +73,12 @@ def add_df_to_treeview(df, treeview):
         treeview.column(i, anchor="w")
         treeview.heading(i, text=i, anchor='w')
 
+    treeview.column("#0", width=0, stretch=False)
+
     # add data
     for index, row in df.iterrows():
         values = [row[col] for col in columns]
         treeview.insert("", "end", values=values)
-
-    # Depricated till I can get it to play nice with the uninstaller
-    #dkp = desktop_path()
-    #df.to_csv(os.path.join(dkp, "total_invoices.csv"))
 
 def get_df(item, after_date, before_date, treeview, conn):
 

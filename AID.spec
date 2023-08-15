@@ -8,7 +8,7 @@ a = Analysis(
     ['AID.py'],
     pathex=[],
     binaries=[],
-    datas=[('config.yaml', '.')],
+    datas=[],
     hiddenimports=['babel.numbers'],
     hookspath=[],
     hooksconfig={},
