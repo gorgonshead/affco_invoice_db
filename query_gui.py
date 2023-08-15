@@ -3,22 +3,13 @@ from tkinter import *
 from tkinter import ttk
 from tkcalendar import *
 from db_query import *
-import tkinter.ttk as ttk
 from datetime import datetime
 
-#initialize tk frames
-class tk_init:
-    def __init__(self, root, title):
-        self.root = root
-        self.root.title(title)
-        self.mainframe = ttk.Frame(self.root)
-        self.mainframe.pack(fill=BOTH, expand=TRUE)
-
-def inv_date_win():
+def inv_date_win(conn):
 
     # Set up main window
     query_root = tk.Toplevel()
-    query_root.title("AID - AFFCO Invoice Database")
+    query_root.geometry()
 
     mainframe = Frame(query_root)
     mainframe.pack(fill=BOTH, expand=TRUE)
@@ -56,7 +47,7 @@ def inv_date_win():
     treeview.pack(fill=BOTH, expand=TRUE)
 
     ok_button = Button(display_frame, text="OK", command=
-                       lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview))
+                       lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview, conn))
     ok_button.pack(side=LEFT, fill=X, expand=TRUE)
 
     cancel_button = Button(display_frame, text="Cancel", command= query_root.destroy)
@@ -68,6 +59,8 @@ def inv_date_win():
 
 
 def add_df_to_treeview(df, treeview):
+    """Adds query to treeview"""
+    
     # clear previous contents
     for i in treeview.get_children():
         treeview.delete(i)
@@ -80,14 +73,16 @@ def add_df_to_treeview(df, treeview):
         treeview.column(i, anchor="w")
         treeview.heading(i, text=i, anchor='w')
 
+    treeview.column("#0", width=0, stretch=False)
+
     # add data
     for index, row in df.iterrows():
         values = [row[col] for col in columns]
         treeview.insert("", "end", values=values)
 
-def get_df(item, after_date, before_date, treeview):
+def get_df(item, after_date, before_date, treeview, conn):
 
-    df = db_query_date(item, after_date, before_date)
+    df = db_query_date(item, after_date, before_date, conn)
 
     print(df)
 
