@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import simpledialog
 from query_gui import *
 from aid_import import *
 from aid_import_def import *
@@ -16,17 +17,14 @@ class Tk_init:
         self.mainframe = ttk.Frame(self.root)
         self.mainframe.grid(sticky='nsew')
 
-def provision_name():
-    """Gather company name from config."""
+def provision_name(new_dir):
+    """Create a config file if not exists, then gather company name from config."""
     
-    import os, sys
-    
-    if getattr(sys, 'frozen', False):
-        application_path = sys._MEIPASS
-    else:
-        application_path = os.path.dirname(os.path.abspath(__file__))
-    
-    config_path = os.path.join(application_path, 'config.yaml')
+    config_path = os.path.join(new_dir, "config.yaml")
+    if os.path.exists(config_path) == False:
+        name_input = tk.simpledialog.askstring('User Setup', 'What is the name of the company?')
+        with open(config_path, "a") as f:
+            config=yaml.safe_dump({'company': name_input, 'software_version': '1.0' }, f)
 
     with open(config_path, 'r') as file:
         config=yaml.safe_load(file)
@@ -51,14 +49,15 @@ def main_gui():
     new_dir = os.path.join(home_dir, "AID")
     os.makedirs(new_dir, exist_ok=True)
 
-    # Now, when you create your SQLite connection, save the database file in the new directory
+    # Connect to the database file in the new directory
     db_path = os.path.join(new_dir, "invoice_db.db")
     conn = sqlite3.connect(db_path)
 
+    # Create new main gui window
     root = tk.Tk()
     root.grid_columnconfigure(0, weight=1)
     root.grid_rowconfigure(0, weight=1)
-    root_title = provision_name()
+    root_title = provision_name(new_dir)
     geo = "1500x700"
     
     main = Tk_init(root, root_title, geo)

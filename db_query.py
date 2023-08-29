@@ -16,23 +16,19 @@ def desktop_path():
 def db_query_date(item, min_date, max_date, conn):
     """Queries the database for an item between a date range
     
-    Keyword arguments:
-    item = item number to be queried
-    min_date = lower bound for date range
-    max_date = upper bound for date range"""
+    Keyword arguments:\n
+      item = item number to be queried\n
+      min_date = lower bound for date range\n
+      max_date = upper bound for date range\n
+      conn = connection object to db"""
     
     min_date = pd.to_datetime(min_date, format="%m/%d/%y").date()
     max_date = pd.to_datetime(max_date, format="%m/%d/%y").date()
-    print(min_date)
-    print(max_date)
-
-    print(type(item))
 
     # Query data into a pandas DataFrame, convert datatype and limit data
     df = pd.read_sql_query("SELECT * FROM invoices", conn)
-    print(df)
-    print(df['SELL BY'])
     df['SELL BY'] = pd.to_datetime(df['SELL BY'], errors='coerce').dt.date
+    df['QUANTITY'] = df['QUANTITY'].astype(int)
     df['ITEM'] = df['ITEM'].astype(str)
     df = df[(df['ITEM'] == item) & df['SELL BY'].between(min_date, max_date)]
     df = df.sort_values(by=['SELL BY'])

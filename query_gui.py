@@ -42,10 +42,10 @@ def inv_date_win(conn):
     # Create display for results of the query in mainframe
     display_frame = ttk.Frame(mainframe, height=250, padding= 10, width=500)
     display_frame.pack(side=BOTTOM, fill=BOTH, expand=TRUE)
-
     treeview = ttk.Treeview(display_frame)
     treeview.pack(fill=BOTH, expand=TRUE)
 
+    # Create buttons
     ok_button = Button(display_frame, text="OK", command=
                        lambda: get_df(item.get(), after_date.get(), before_date.get(), treeview, conn))
     ok_button.pack(side=LEFT, fill=X, expand=TRUE)
@@ -61,11 +61,11 @@ def inv_date_win(conn):
 def add_df_to_treeview(df, treeview):
     """Adds query to treeview"""
     
-    # clear previous contents
+    # Clear previous contents
     for i in treeview.get_children():
         treeview.delete(i)
 
-    # add column names
+    # Add column names
     columns = ["DELIVERY", "ITEM", "DESCRIPTION", "SELL BY", "QUANTITY"]
     treeview["columns"] = columns
 
@@ -73,19 +73,17 @@ def add_df_to_treeview(df, treeview):
         treeview.column(i, anchor="w")
         treeview.heading(i, text=i, anchor='w')
 
-    # add data
+    # Change first row to zero width to prevent UI inconsistency
+    treeview.column("#0", width=0, stretch=False)
+
+    # Add data to treeview
     for index, row in df.iterrows():
         values = [row[col] for col in columns]
         treeview.insert("", "end", values=values)
 
-    # Depricated till I can get it to play nice with the uninstaller
-    #dkp = desktop_path()
-    #df.to_csv(os.path.join(dkp, "total_invoices.csv"))
-
 def get_df(item, after_date, before_date, treeview, conn):
+    '''Passes df to treeview after query'''
 
     df = db_query_date(item, after_date, before_date, conn)
-
-    print(df)
 
     add_df_to_treeview(df, treeview)

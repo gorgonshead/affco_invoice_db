@@ -12,11 +12,11 @@ from tkinter.filedialog import askopenfilenames
 def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, root):
     """Export sell by dates older than the best dates for that item.
     
-    Keyword arguments:
-    conn = database connection object.
-    last_sellbys = pandas dataframe that contains a list of dates.
-    desktop_path = path to the current user's desktop.
-    df = pandas dataframe to check last_sellbys against."""
+    Keyword arguments:\n
+      conn = database connection object.\n
+      last_sellbys = pandas dataframe that contains a list of dates.\n
+      desktop_path = path to the current user's desktop.\n
+      df = pandas dataframe to check last_sellbys against."""
 
     # Merge the last_sellbys on the db df
     # If the best sellbys in db are greater than incoming, print &
@@ -111,14 +111,17 @@ def deliv_date(conn, df, root):
 def deldate_cal_win(df, root):
     """Create a calendar window to input the delivery date, then return the date selected"""
 
+    # Get the user selected date to pass off
     def return_date():
         chosen_date.set(new_date_cal.get_date())
         root.destroy()
     
+    # Get the delivery number from df
     def invoice_num(df):
         num = df['DELIVERY'].unique()
         return num
 
+    # Prompt user to select the delivery date of the incoming invoice
     root = tk.Toplevel()
     root.title(f"Delivery date from invoice {invoice_num(df)}")
 

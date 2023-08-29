@@ -8,7 +8,7 @@ a = Analysis(
     ['AID.py'],
     pathex=[],
     binaries=[],
-    datas=[('config.yaml', '.')],
+    datas=[],
     hiddenimports=['babel.numbers'],
     hookspath=[],
     hooksconfig={},
@@ -41,4 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='AFFCO Provisions Logo Symbol.ico',
 )

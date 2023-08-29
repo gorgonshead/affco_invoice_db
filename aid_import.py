@@ -73,6 +73,7 @@ def aid_import(treeview, root, conn):
 
             if df.empty:
 
+                # If an df is empty, alert user invoice is in db
                 duplicate_er = tk.Toplevel(root)
                 label = Label(duplicate_er, text="This invoice has been imported.")
                 label.pack(padx=10, pady=10)
@@ -88,5 +89,6 @@ def aid_import(treeview, root, conn):
                 # Convert the DataFrame into a SQLite table
                 df.to_sql(name='invoices', con=conn, if_exists='append', index=False)
 
+        # Alert user if file is not csv
         else:
             print('Please upload a .csv file')
