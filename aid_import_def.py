@@ -111,14 +111,17 @@ def deliv_date(conn, df, root):
 def deldate_cal_win(df, root):
     """Create a calendar window to input the delivery date, then return the date selected"""
 
+    # Get the user selected date to pass off
     def return_date():
         chosen_date.set(new_date_cal.get_date())
         root.destroy()
     
+    # Get the delivery number from df
     def invoice_num(df):
         num = df['DELIVERY'].unique()
         return num
 
+    # Prompt user to select the delivery date of the incoming invoice
     root = tk.Toplevel()
     root.title(f"Delivery date from invoice {invoice_num(df)}")
 

@@ -24,15 +24,9 @@ def db_query_date(item, min_date, max_date, conn):
     
     min_date = pd.to_datetime(min_date, format="%m/%d/%y").date()
     max_date = pd.to_datetime(max_date, format="%m/%d/%y").date()
-    print(min_date)
-    print(max_date)
-
-    print(type(item))
 
     # Query data into a pandas DataFrame, convert datatype and limit data
     df = pd.read_sql_query("SELECT * FROM invoices", conn)
-    print(df)
-    print(df['SELL BY'])
     df['SELL BY'] = pd.to_datetime(df['SELL BY'], errors='coerce').dt.date
     df['QUANTITY'] = df['QUANTITY'].astype(int)
     df['ITEM'] = df['ITEM'].astype(str)
