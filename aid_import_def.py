@@ -12,11 +12,11 @@ from tkinter.filedialog import askopenfilenames
 def bad_sh_date_chk(conn, last_sellbys, desktop_path, df, root):
     """Export sell by dates older than the best dates for that item.
     
-    Keyword arguments:
-    conn = database connection object.
-    last_sellbys = pandas dataframe that contains a list of dates.
-    desktop_path = path to the current user's desktop.
-    df = pandas dataframe to check last_sellbys against."""
+    Keyword arguments:\n
+      conn = database connection object.\n
+      last_sellbys = pandas dataframe that contains a list of dates.\n
+      desktop_path = path to the current user's desktop.\n
+      df = pandas dataframe to check last_sellbys against."""
 
     # Merge the last_sellbys on the db df
     # If the best sellbys in db are greater than incoming, print &

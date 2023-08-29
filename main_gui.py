@@ -51,7 +51,7 @@ def main_gui():
 
     # Connect to the database file in the new directory
     db_path = os.path.join(new_dir, "invoice_db.db")
-    conn = sqlite3.connect(db_path)  
+    conn = sqlite3.connect(db_path)
 
     # Create new main gui window
     root = tk.Tk()
