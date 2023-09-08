@@ -5,7 +5,8 @@ from datetime import datetime
 import babel.numbers
 
 def connection():
-    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'invoice_db.db')
+    home_dir = os.path.expanduser("~")
+    db_path = os.path.join(home_dir, "AID\invoice_db.db")
     print(db_path)
     return sqlite3.connect(db_path)
 
