@@ -96,7 +96,7 @@ def deliv_date(conn, df, root):
 
     # Prompt user for the delivery date, transform to datetime
     new_date = deldate_cal_win(df, root)
-    new_date = pd.to_datetime(new_date)
+    new_date = pd.to_datetime(new_date, format='%Y-%m-%d')
     
     # Get a list of all delivery numbers from the database
     existing_del_num = pd.read_sql_query('SELECT delivery_number FROM delivery_date', conn)['Delivery_Number'].values
@@ -124,19 +124,21 @@ def deldate_cal_win(df, root):
     # Prompt user to select the delivery date of the incoming invoice
     root = tk.Toplevel()
     root.title(f"Delivery date from invoice {invoice_num(df)}")
+    root.geometry("400x225")
 
     mainframe = Frame(root)
     mainframe.pack()
 
     chosen_date = StringVar()
-    choose_date = StringVar(value=datetime.now().strftime('%d/%m/%Y'))
-    new_date_cal = Calendar(mainframe, date_pattern='y/mm/dd', textvariable=choose_date)
+    choose_date = StringVar(value=datetime.now().strftime('%Y-%m-%d'))
+    new_date_cal = Calendar(mainframe, date_pattern='y-mm-dd', textvariable=choose_date)
     new_date_cal.pack()
 
-    button = Button(mainframe, text="OK", command=return_date)
+    button = Button(mainframe, text="OK", command=lambda:return_date())
     button.pack(fill=BOTH)
 
     mainframe.focus_force()
+    root.wait_window()
 
     return chosen_date.get()
 

@@ -44,6 +44,7 @@ def aid_import(treeview, root, conn):
     # Initialize variables for con, import files, & desktop path 
     create_table(conn)
     paths = select_files()
+    paths = sorted(paths)
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
     # Initialize most recent sell bys
