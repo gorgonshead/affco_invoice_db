@@ -29,6 +29,7 @@ exe = EXE(
     a.datas,
     [],
     name='AID',
+    icon="AFFCO Provisions Logo Symbol.ico",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
